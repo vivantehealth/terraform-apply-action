@@ -35,12 +35,15 @@ runs:
     - name: Set up Terraform cli
       uses: hashicorp/setup-terraform@v1
     - name: Generate backend config
+      shell: bash
       run: |
         echo 'bucket = "${{ inputs.terraform_project_id }}-state"' > backend.hcl
         echo 'prefix = "${{ github.event.repository.name }}"' >> backend.hcl
     - name: TF init
+      shell: bash
       run: terraform init -input=false -backend-config=./backend.hcl
     - name: TF apply
+      shell: bash
       run: |
         if [[ ${{ inputs.use_plan_file }} == "true" ]]; then
           terraform apply -input=false ${{ inputs.additional_apply_args }} planfile
