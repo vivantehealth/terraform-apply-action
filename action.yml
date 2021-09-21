@@ -31,6 +31,7 @@ runs:
     - name: Checkout
       uses: actions/checkout@master
     - name: Change directory
+      shell: bash
       run: cd ${{ inputs.tf_working_dir }}
     - name: Login to GCP
       uses: google-github-actions/setup-gcloud@master
