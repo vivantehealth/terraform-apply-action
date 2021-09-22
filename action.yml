@@ -30,9 +30,6 @@ runs:
   steps:
     - name: Checkout
       uses: actions/checkout@master
-    - name: Change directory
-      shell: bash
-      run: cd ${{ inputs.tf_working_dir }}
     - name: Login to GCP
       uses: google-github-actions/setup-gcloud@master
       with:
@@ -42,14 +39,17 @@ runs:
     - name: Set up Terraform cli
       uses: hashicorp/setup-terraform@v1
     - name: Generate backend config
+      working-directory: ${{ inputs.tf_working_dir }}
       shell: bash
       run: |
         echo 'bucket = "${{ inputs.terraform_project_id }}-state"' > backend.hcl
         echo 'prefix = "${{ github.event.repository.name }}"' >> backend.hcl
     - name: TF init
+      working-directory: ${{ inputs.tf_working_dir }}
       shell: bash
       run: terraform init -input=false -backend-config=./backend.hcl
     - name: TF apply
+      working-directory: ${{ inputs.tf_working_dir }}
       shell: bash
       run: |
         if [[ ${{ inputs.use_plan_file }} == "true" ]]; then
