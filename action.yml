@@ -59,4 +59,5 @@ runs:
         fi
       env:
         TF_VAR_secrets_provisioning_private_key: ${{ inputs.secrets_provisioning_private_key }}
-        TF_VAR_google_project: ${{ inputs.domain_project_id }}
+        TF_VAR_domain_project: ${{ inputs.domain_project_id }}
+        TF_VAR_terraform_project: ${{ inputs.terraform_project_id }}
