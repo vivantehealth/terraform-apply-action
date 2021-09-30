@@ -4,11 +4,11 @@ inputs:
   gcp_key:
     description: GCP key of a service account that has at least read permissions to the resources managed by the terraform files
     required: true
-  terraform_project_id:
-    description: GCP project id of the folder's terraform state project
+  base64_terraform_project_id:
+    description: Base64 encoded GCP project id of the folder's terraform state project
     required: true
-  domain_project_id:
-    description: GCP project id of the stack's domain
+  base64_domain_project_id:
+    description: Base64 encoded GCP project id of the stack's domain
     required: true
   secrets_provisioning_private_key:
     description: Private key for a GitHub App that can provision repo-environments and secrets
@@ -42,7 +42,7 @@ runs:
       working-directory: ${{ inputs.tf_working_dir }}
       shell: bash
       run: |
-        echo 'bucket = "${{ inputs.terraform_project_id }}-state"' > backend.hcl
+        echo 'bucket = "$(echo -n ${{ inputs.base64_terraform_project_id }} | base64 -d)-state"' > backend.hcl
         echo 'prefix = "${{ github.event.repository.name }}"' >> backend.hcl
     - name: TF init
       working-directory: ${{ inputs.tf_working_dir }}
@@ -52,6 +52,8 @@ runs:
       working-directory: ${{ inputs.tf_working_dir }}
       shell: bash
       run: |
+        export TF_VAR_domain_project_id=$(echo -n ${{ inputs.base64_domain_project_id }} | base64 -d)
+        export TF_VAR_terraform_project_id=$(echo -n ${{ inputs.base64_terraform_project_id }} | base64 -d)
         if [[ ${{ inputs.use_plan_file }} == "true" ]]; then
           terraform apply -input=false ${{ inputs.additional_apply_args }} planfile
         else
@@ -59,5 +61,5 @@ runs:
         fi
       env:
         TF_VAR_secrets_provisioning_private_key: ${{ inputs.secrets_provisioning_private_key }}
-        TF_VAR_domain_project: ${{ inputs.domain_project_id }}
-        TF_VAR_terraform_project: ${{ inputs.terraform_project_id }}
+        TF_VAR_base64_domain_project_id: ${{ inputs.base64_domain_project_id }}
+        TF_VAR_base64_terraform_project_id: ${{ inputs.base64_terraform_project_id }}
