@@ -27,4 +27,9 @@ jobs:
         with:
           body: ${{ github.event.head_commit.message }}
           tag: ${{ steps.tag.outputs.new_tag }}
+      - name: Update major version release tag
+        uses: Actions-R-Us/actions-tagger@latest
+        with:
+          tag: ${{ steps.tag.outputs.new_tag }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
