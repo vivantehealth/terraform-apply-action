@@ -33,7 +33,6 @@ runs:
     - name: Login to GCP
       uses: google-github-actions/setup-gcloud@master
       with:
-        version: '344.0.0'
         service_account_key: ${{ inputs.gcp_key }}
         export_default_credentials: true
     - name: Set up Terraform cli
