@@ -39,7 +39,60 @@ runs:
       working-directory: ${{ inputs.tf_working_dir }}
       shell: bash
       run: |
+        echo "${{ inputs.additional_apply_args }}"
+    - name: just echo
+      working-directory: ${{ inputs.tf_working_dir }}
+      shell: bash
+      run: |
+        echo "${{ inputs.gcp_key }}"
+    - name: just echo
+      working-directory: ${{ inputs.tf_working_dir }}
+      shell: bash
+      run: |
+        echo "${{ inputs.tf_working_dir }}"
+    - name: just echo
+      working-directory: ${{ inputs.tf_working_dir }}
+      shell: bash
+      run: |
         echo "${{ inputs.base64_terraform_project_id }}"
+    - name: double base64
+      working-directory: ${{ inputs.tf_working_dir }}
+      shell: bash
+      run: |
+        echo "${{ inputs.base64_terraform_project_id }}" | base64 | base64
+    - name: just set a variable
+      working-directory: ${{ inputs.tf_working_dir }}
+      shell: bash
+      run: |
+        base64_project="${{ inputs.base64_terraform_project_id }}" #"
+    - name: just echo and base64 decode
+      working-directory: ${{ inputs.tf_working_dir }}
+      shell: bash
+      run: |
+        echo -n ${project} | base64 -d
+    - name: Generate backend config
+      working-directory: ${{ inputs.tf_working_dir }}
+      shell: bash
+      run: |
+        base64_project="${{ inputs.base64_terraform_project_id }}"
+        project="$(echo -n ${base64_project} | base64 -d)"
+        echo "${project}"
+        touch backend.hcl
+    - name: Generate backend config
+      working-directory: ${{ inputs.tf_working_dir }}
+      shell: bash
+      run: |
+        echo "bucket = \"$(echo -n ${{ inputs.base64_terraform_project_id }} | base64 -d)-state\"" > backend.hcl
+    - name: Continue generating backend config
+      working-directory: ${{ inputs.tf_working_dir }}
+      shell: bash
+      run: |
+        echo "prefix = \"${{ github.event.repository.name }}\"" >> backend.hcl
+    - name: Debug
+      working-directory: ${{ inputs.tf_working_dir }}
+      shell: bash
+      run: |
+        cat backend.hcl
     - name: TF init
       working-directory: ${{ inputs.tf_working_dir }}
       shell: bash
