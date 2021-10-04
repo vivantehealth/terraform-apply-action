@@ -42,7 +42,7 @@ runs:
         base64_project="${{ inputs.base64_terraform_project_id }}"
         project="$(echo -n ${project} | base64 -d)"
         echo "${project}"
-        touch backend.hcl
+        #touch backend.hcl
     - name: Generate backend config
       working-directory: ${{ inputs.tf_working_dir }}
       shell: bash
