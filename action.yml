@@ -41,7 +41,13 @@ runs:
       run: |
         base64_project="${{ inputs.base64_terraform_project_id }}"
         project="$(echo -n ${project} | base64 -d)"
-        echo "bucket = \"${project}-state\"" > backend.hcl
+        echo "${project}"
+        touch backend.hcl
+    - name: Generate backend config
+      working-directory: ${{ inputs.tf_working_dir }}
+      shell: bash
+      run: |
+        echo "bucket = \"$(echo -n ${{ inputs.base64_terraform_project_id }} | base64 -d)-state\"" > backend.hcl
     - name: Continue generating backend config
       working-directory: ${{ inputs.tf_working_dir }}
       shell: bash
