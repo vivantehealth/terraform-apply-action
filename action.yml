@@ -41,6 +41,7 @@ runs:
       run: |
         echo "bucket = \"$(echo -n ${{ inputs.base64_terraform_project_id }} | base64 -d)-state\"" > backend.hcl
         echo "prefix = \"${{ github.event.repository.name }}\"" >> backend.hcl
+        cat backend.hcl
     - name: TF init
       working-directory: ${{ inputs.tf_working_dir }}
       shell: bash
