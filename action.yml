@@ -35,14 +35,24 @@ runs:
         export_default_credentials: true
     - name: Set up Terraform cli
       uses: hashicorp/setup-terraform@v1
+    - name: just set a variable
+      working-directory: ${{ inputs.tf_working_dir }}
+      shell: bash
+      run: |
+        base64_project="${{ inputs.base64_terraform_project_id }}" #"
+    - name: just echo and base64 decode
+      working-directory: ${{ inputs.tf_working_dir }}
+      shell: bash
+      run: |
+        echo -n ${project} | base64 -d
     - name: Generate backend config
       working-directory: ${{ inputs.tf_working_dir }}
       shell: bash
       run: |
         base64_project="${{ inputs.base64_terraform_project_id }}"
-        project="$(echo -n ${project} | base64 -d)"
+        project="$(echo -n ${base64_project} | base64 -d)"
         echo "${project}"
-        #touch backend.hcl
+        touch backend.hcl
     - name: Generate backend config
       working-directory: ${{ inputs.tf_working_dir }}
       shell: bash
