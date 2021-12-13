@@ -1,8 +1,11 @@
 name: 'Terraform Apply'
 description: "terraform apply for GCP"
 inputs:
-  gcp_key:
-    description: GCP key of a service account that has at least read permissions to the resources managed by the terraform files
+  base64_workload_identity_provider:
+    description: GCP Workload Identity Pool Provider ID (e.g. projects/<project-number>/locations/global/workloadIdentityPools/<pool>/providers/<id>)
+    required: true
+  base64_gcp_service_account:
+    description: GCP service Acccount to authenticate with using workload identity
     required: true
   base64_terraform_project_id:
     description: Base64 encoded GCP project id of the folder's terraform state project
@@ -28,11 +31,11 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Login to GCP
-      uses: google-github-actions/setup-gcloud@master
+    - name: Set up gcloud
+      uses: vivantehealth/gcloud-workload-identity-action@v2
       with:
-        service_account_key: ${{ inputs.gcp_key }}
-        export_default_credentials: true
+        base64_workload_identity_provider: ${{ inputs.base64_workload_identity_provider }}
+        base64_gcp_service_account: ${{ inputs.base64_gcp_service_account }}
     - name: Set up Terraform cli
       uses: hashicorp/setup-terraform@v1
     - name: Generate backend config
