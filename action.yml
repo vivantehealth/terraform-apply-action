@@ -53,6 +53,7 @@ runs:
       working-directory: ${{ inputs.tf_working_dir }}
       shell: bash
       run: |
+        export TF_VAR_stack_name=$(echo -n ${{ github.event.repository.name }})
         export TF_VAR_domain_project_id=$(echo -n ${{ inputs.base64_domain_project_id }} | base64 -d)
         export TF_VAR_terraform_project_id=$(echo -n ${{ inputs.base64_terraform_project_id }} | base64 -d)
         if [[ ${{ inputs.use_plan_file }} == "true" ]]; then
