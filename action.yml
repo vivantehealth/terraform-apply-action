@@ -17,6 +17,10 @@ inputs:
     description: Path to terraform plan file from the `terraform plan` step.
     required: false
     default: ""
+  tfvars_file:
+    description: Terraform variables file path, if any. Not compatible with plan_file
+    required: false
+    default: ""
   tf_working_dir:
     description: Path to directory where terraform commands should be run
     required: false
@@ -49,4 +53,4 @@ runs:
         export TF_VAR_stack_name=$(echo -n ${{ github.event.repository.name }})
         export TF_VAR_domain_project_id=$(echo -n ${{ inputs.base64_domain_project_id }} | base64 -d)
         export TF_VAR_terraform_project_id=$(echo -n ${{ inputs.base64_terraform_project_id }} | base64 -d)
-        terraform apply -input=false ${{ inputs.additional_apply_args }} ${{ inputs.plan_file }}
+        terraform apply -input=false ${{ inputs.additional_apply_args }} ${{ inputs.tfvars_file }} ${{ inputs.plan_file }}
