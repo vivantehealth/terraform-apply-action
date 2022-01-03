@@ -11,19 +11,12 @@ inputs:
     description: Base64 encoded GCP project id of the folder's terraform state project
     required: true
   base64_domain_project_id:
-    description: Base64 encoded GCP project id of the stack's domain
-    required: true
-  secrets_provisioning_private_key:
-    description: Private key for a GitHub App that can provision repo-environments and secrets
-    required: true
-  additional_apply_args:
-    description: Additional arguments to add to the `terraform apply` step. Use this to specify tfvar files, for example
+    description: Base64 encoded GCP project id of the stack's domain. Does not need to be set if planfile is used
+    required: false
+  plan_file:
+    description: Path to terraform plan file from the `terraform plan` step.
     required: false
     default: ""
-  use_plan_file:
-    description: Whether to use the plan file from the `terraform plan` step. May not be compatible with additional_apply_args
-    required: false
-    default: "false"
   tf_working_dir:
     description: Path to directory where terraform commands should be run
     required: false
@@ -56,10 +49,4 @@ runs:
         export TF_VAR_stack_name=$(echo -n ${{ github.event.repository.name }})
         export TF_VAR_domain_project_id=$(echo -n ${{ inputs.base64_domain_project_id }} | base64 -d)
         export TF_VAR_terraform_project_id=$(echo -n ${{ inputs.base64_terraform_project_id }} | base64 -d)
-        if [[ ${{ inputs.use_plan_file }} == "true" ]]; then
-          terraform apply -input=false ${{ inputs.additional_apply_args }} planfile
-        else
-          terraform apply -input=false -auto-approve ${{ inputs.additional_apply_args }}
-        fi
-      env:
-        TF_VAR_secrets_provisioning_private_key: ${{ inputs.secrets_provisioning_private_key }}
+        terraform apply -input=false ${{ inputs.additional_apply_args }} ${{ inputs.plan_file }}
