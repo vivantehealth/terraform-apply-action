@@ -13,6 +13,9 @@ inputs:
   base64_domain_project_id:
     description: Base64 encoded GCP project id of the stack's domain. Does not need to be set if planfile is used
     required: false
+  base64_docker_registry:
+    description: Base64 encoded docker registry, with optional docker repo name
+    required: true    
   plan_file:
     description: Path to terraform plan file from the `terraform plan` step.
     required: false
