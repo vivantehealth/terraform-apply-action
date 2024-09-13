@@ -37,7 +37,7 @@ runs:
         base64_workload_identity_provider: ${{ inputs.base64_workload_identity_provider }}
         base64_gcp_service_account: ${{ inputs.base64_gcp_service_account }}
     - name: Set up Terraform cli
-      uses: hashicorp/setup-terraform@v1
+      uses: hashicorp/setup-terraform@v3
     - name: Generate backend config
       working-directory: ${{ inputs.tf_working_dir }}
       shell: bash
